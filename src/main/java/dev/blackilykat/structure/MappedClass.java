@@ -3,13 +3,14 @@ package dev.blackilykat.structure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MappedClass extends Mapped {
     public ArrayList<MappedTyped> contained = new ArrayList<>();
 
-    public static @NotNull ArrayList<MappedClass> extract(ArrayList<ArrayList<String>> parsedSrg) {
+    public static @NotNull List<MappedClass> extract(List<List<String>> parsedSrg) {
         ArrayList<MappedClass> mappedClasses = new ArrayList<>();
-        for (ArrayList<String> clientRow : parsedSrg) {
+        for (List<String> clientRow : parsedSrg) {
             MappedClass lastMappedClass = new MappedClass();
             switch(clientRow.get(0)) {
                 case "PK:" -> {

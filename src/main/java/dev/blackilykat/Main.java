@@ -6,8 +6,10 @@ import dev.blackilykat.structure.MappedField;
 import dev.blackilykat.structure.MappedMethod;
 import dev.blackilykat.structure.MappedTyped;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -18,11 +20,11 @@ public class Main {
         File methodsCsv = new File("methods.csv");
         File output = new File("mappings.tiny");
 
-        ArrayList<ArrayList<String>> parsedClientSrg = CsvParser.parse(clientSrg, " ", false);
-        ArrayList<ArrayList<String>> parsedServerSrg = CsvParser.parse(serverSrg, " ", false);
+        List<List<String>> parsedClientSrg = CsvParser.parse(clientSrg, " ", false);
+        List<List<String>> parsedServerSrg = CsvParser.parse(serverSrg, " ", false);
 
-        ArrayList<MappedClass> mappedClasses = MappedClass.extract(parsedClientSrg);
-        ArrayList<MappedClass> mappedServerClasses = MappedClass.extract(parsedServerSrg);
+        List<MappedClass> mappedClasses = MappedClass.extract(parsedClientSrg);
+        List<MappedClass> mappedServerClasses = MappedClass.extract(parsedServerSrg);
 
         for (MappedClass mappedServerClass : mappedServerClasses) {
             boolean alreadyThere = false;
@@ -37,10 +39,10 @@ public class Main {
             }
         }
 
-        ArrayList<ArrayList<String>> parsedFieldsCsv = CsvParser.parse(fieldsCsv, ",", true);
-        ArrayList<ArrayList<String>> parsedMethodsCsv = CsvParser.parse(methodsCsv, ",", true);
+        List<List<String>> parsedFieldsCsv = CsvParser.parse(fieldsCsv, ",", true);
+        List<List<String>> parsedMethodsCsv = CsvParser.parse(methodsCsv, ",", true);
 
-        for (ArrayList<String> parsedField : parsedFieldsCsv) {
+        for (List<String> parsedField : parsedFieldsCsv) {
             classLoop:
             for (MappedClass mappedClass : mappedClasses) {
                 for (MappedTyped mappedTyped : mappedClass.contained) {
@@ -51,7 +53,7 @@ public class Main {
                 }
             }
         }
-        for (ArrayList<String> parsedMethod : parsedMethodsCsv) {
+        for (List<String> parsedMethod : parsedMethodsCsv) {
             classLoop:
             for (MappedClass mappedClass : mappedClasses) {
                 for (MappedTyped mappedTyped : mappedClass.contained) {

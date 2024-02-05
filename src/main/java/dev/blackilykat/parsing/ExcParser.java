@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ExcParser {
-    public ArrayList<ExcRow> parse(File file) throws FileNotFoundException {
+    public List<ExcRow> parse(File file) throws FileNotFoundException {
         if(!file.exists()) {
             throw new FileNotFoundException();
         }
