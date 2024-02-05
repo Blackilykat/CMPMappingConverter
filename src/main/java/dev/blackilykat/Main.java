@@ -7,18 +7,19 @@ import dev.blackilykat.structure.MappedMethod;
 import dev.blackilykat.structure.MappedTyped;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File clientSrg = new File("client.srg");
-        File serverSrg = new File("server.srg");
+        Path clientSrg = Path.of("client.srg");
+        Path serverSrg = Path.of("server.srg");
         File joinedExc = new File("joined.exc");
-        File fieldsCsv = new File("fields.csv");
-        File methodsCsv = new File("methods.csv");
-        File output = new File("mappings.tiny");
+        Path fieldsCsv = Path.of("fields.csv");
+        Path methodsCsv = Path.of("methods.csv");
+        Path output = Path.of("mappings.tiny");
 
         List<List<String>> parsedClientSrg = CsvParser.parse(clientSrg, " ", false);
         List<List<String>> parsedServerSrg = CsvParser.parse(serverSrg, " ", false);
@@ -71,9 +72,7 @@ public class Main {
             outputBuilder.append(mappedClass.toTinyMappings());
         }
 
-        if(!output.exists()) output.createNewFile();
-        try(FileWriter writer = new FileWriter(output)) {
-            writer.write(outputBuilder.toString());
-        }
+        if(!Files.exists(output)) Files.createFile(output);
+        Files.writeString(output, outputBuilder.toString());
     }
 }

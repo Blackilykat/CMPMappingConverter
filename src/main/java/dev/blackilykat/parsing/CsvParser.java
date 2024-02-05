@@ -1,23 +1,22 @@
 package dev.blackilykat.parsing;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class CsvParser {
-    public static List<List<String>> parse(File file, String separator, boolean ignoreFirst) throws FileNotFoundException {
-        if(!file.exists()) {
+    public static List<List<String>> parse(Path file, String separator, boolean ignoreFirst) throws IOException {
+        if(!Files.exists(file)) {
             throw new FileNotFoundException();
         }
         ArrayList<List<String>> value = new ArrayList<>();
-        Scanner scanner = new Scanner(new FileInputStream(file));
-        if(ignoreFirst) scanner.nextLine();
-        while(scanner.hasNext()) {
-            value.add(new ArrayList<>(Arrays.stream(scanner.nextLine().split(separator)).toList()));
+        try(Stream<String> lines = Files.lines(file)) {
+            lines.skip(ignoreFirst ? 1 : 0)
+                    .forEach(line -> value.add(new ArrayList<>(List.of(line.split(separator)))));
         }
         return value;
     }
