@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CsvParser {
@@ -16,7 +18,7 @@ public class CsvParser {
         ArrayList<List<String>> value = new ArrayList<>();
         try(Stream<String> lines = Files.lines(file)) {
             lines.skip(ignoreFirst ? 1 : 0)
-                    .forEach(line -> value.add(new ArrayList<>(List.of(line.split(separator)))));
+                    .forEach(line -> value.add(new ArrayList<>(Arrays.stream(line.split(separator)).collect(Collectors.toList()))));
         }
         return value;
     }

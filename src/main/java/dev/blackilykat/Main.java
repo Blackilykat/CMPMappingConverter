@@ -10,16 +10,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Path clientSrg = Path.of("client.srg");
-        Path serverSrg = Path.of("server.srg");
+        Path clientSrg = Paths.get("client.srg");
+        Path serverSrg = Paths.get("server.srg");
         File joinedExc = new File("joined.exc");
-        Path fieldsCsv = Path.of("fields.csv");
-        Path methodsCsv = Path.of("methods.csv");
-        Path output = Path.of("mappings.tiny");
+        Path fieldsCsv = Paths.get("fields.csv");
+        Path methodsCsv = Paths.get("methods.csv");
+        Path output = Paths.get("mappings.tiny");
 
         List<List<String>> parsedClientSrg = CsvParser.parse(clientSrg, " ", false);
         List<List<String>> parsedServerSrg = CsvParser.parse(serverSrg, " ", false);
@@ -47,7 +48,8 @@ public class Main {
             classLoop:
             for (MappedClass mappedClass : mappedClasses) {
                 for (MappedTyped mappedTyped : mappedClass.contained) {
-                    if(!(mappedTyped instanceof MappedField mappedField)) continue;
+                    if(!(mappedTyped instanceof MappedField)) continue;
+                    MappedField mappedField = (MappedField) mappedTyped;
                     if(!mappedField.seargeName.endsWith(parsedField.get(0))) continue;
                     mappedField.cmpName = parsedField.get(1);
                     break classLoop;
@@ -58,7 +60,8 @@ public class Main {
             classLoop:
             for (MappedClass mappedClass : mappedClasses) {
                 for (MappedTyped mappedTyped : mappedClass.contained) {
-                    if(!(mappedTyped instanceof MappedMethod mappedMethod)) continue;
+                    if(!(mappedTyped instanceof MappedMethod)) continue;
+                    MappedMethod mappedMethod = (MappedMethod) mappedTyped;
                     if(!mappedMethod.seargeName.endsWith(parsedMethod.get(0))) continue;
                     mappedMethod.cmpName = parsedMethod.get(1);
                     break classLoop;
@@ -73,6 +76,6 @@ public class Main {
         }
 
         if(!Files.exists(output)) Files.createFile(output);
-        Files.writeString(output, outputBuilder.toString());
+        Files.write(output, outputBuilder.toString().getBytes());
     }
 }

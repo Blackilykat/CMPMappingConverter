@@ -11,43 +11,40 @@ public class MappedClass extends Mapped {
     public static @NotNull List<MappedClass> extract(List<List<String>> parsedSrg) {
         ArrayList<MappedClass> mappedClasses = new ArrayList<>();
         for (List<String> clientRow : parsedSrg) {
-            MappedClass lastMappedClass = new MappedClass();
-            switch(clientRow.get(0)) {
-                case "PK:" -> {
-                    // nothing, it's not present in the RetroCMP mappings
-                }
-                case "CL:" -> {
-                    MappedClass mappedClass = new MappedClass();
-                    mappedClass.notchName = clientRow.get(1);
-                    mappedClass.seargeName = clientRow.get(2);
-                    lastMappedClass = mappedClass;
-                    mappedClasses.add(mappedClass);
-                }
-                case "FD:" -> {
+            switch (clientRow.get(0)) {
+                case "PK:": // nothing, it's not present in the RetroCMP mappings
+                    break;
+                case "CL:":
+                    MappedClass clMappedClass = new MappedClass();
+                    clMappedClass.notchName = clientRow.get(1);
+                    clMappedClass.seargeName = clientRow.get(2);
+                    mappedClasses.add(clMappedClass);
+                    break;
+                case "FD:":
                     MappedField mappedField = new MappedField();
                     mappedField.notchName = clientRow.get(1);
                     mappedField.seargeName = clientRow.get(2);
-                    String notchClassName = mappedField.notchName.split("/")[0];
-                    for(MappedClass mappedClass : mappedClasses) {
-                        if(mappedClass.notchName.equals(notchClassName)) {
+                    String fdNotchClassName = mappedField.notchName.split("/")[0];
+                    for (MappedClass mappedClass : mappedClasses) {
+                        if (mappedClass.notchName.equals(fdNotchClassName)) {
                             mappedClass.contained.add(mappedField);
                             break;
                         }
                     }
-                }
-                case "MD:" -> {
+                    break;
+                case "MD:":
                     MappedMethod mappedMethod = new MappedMethod();
                     mappedMethod.notchName = clientRow.get(1);
                     mappedMethod.seargeName = clientRow.get(3);
                     mappedMethod.type = clientRow.get(2); // RetroMCP mappings seem to use notch type declarations
-                    String notchClassName = mappedMethod.notchName.split("/")[0];
-                    for(MappedClass mappedClass : mappedClasses) {
-                        if(mappedClass.notchName.equals(notchClassName)) {
+                    String mdNotchClassName = mappedMethod.notchName.split("/")[0];
+                    for (MappedClass mappedClass : mappedClasses) {
+                        if (mappedClass.notchName.equals(mdNotchClassName)) {
                             mappedClass.contained.add(mappedMethod);
                             break;
                         }
                     }
-                }
+                    break;
             }
         }
         return mappedClasses;

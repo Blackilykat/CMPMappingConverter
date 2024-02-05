@@ -37,10 +37,18 @@ public class ExcParser {
                 }
                 // read
                 switch (reading) {
-                    case 0 -> row.method.append(c);
-                    case 1 -> row.type.append(c);
-                    case 2 -> row.exceptions.append(c);
-                    case 3 -> row.parameters.append(c);
+                    case 0:
+                        row.method.append(c);
+                        break;
+                    case 1:
+                        row.type.append(c);
+                        break;
+                    case 2:
+                        row.exceptions.append(c);
+                        break;
+                    case 3:
+                        row.parameters.append(c);
+                        break;
                 }
             } while(scanner.hasNext());
             value.add(row);
