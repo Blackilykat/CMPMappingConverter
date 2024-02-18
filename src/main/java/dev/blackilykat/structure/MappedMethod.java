@@ -7,4 +7,9 @@ public class MappedMethod extends MappedTyped {
     public String getIdentifier() {
         return "m";
     }
+
+    public String getPathlessSeargeName() {
+        String[] parts = seargeName.split("/");
+        return parts[parts.length-1];
+    }
 }

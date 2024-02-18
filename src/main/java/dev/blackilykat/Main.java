@@ -1,6 +1,8 @@
 package dev.blackilykat;
 
 import dev.blackilykat.parsing.CsvParser;
+import dev.blackilykat.parsing.ExcParser;
+import dev.blackilykat.parsing.ExcRow;
 import dev.blackilykat.structure.MappedClass;
 import dev.blackilykat.structure.MappedField;
 import dev.blackilykat.structure.MappedMethod;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -69,10 +72,52 @@ public class Main {
             }
         }
 
+        List<ExcRow> excRows = ExcParser.parse(joinedExc);
+        Iterator<ExcRow> iterator = excRows.iterator();
+        while(iterator.hasNext()) {
+            ExcRow excRow = iterator.next();
+            if(excRow.exceptions.toString().isEmpty()) {
+                iterator.remove();
+                continue;
+            }
+//            System.out.printf("clazz:  %s | method: %s | type: %s | exceptions: %s\n", excRow.clazz, excRow.method, excRow.type, excRow.exceptions);
+            classLoop:
+            for (MappedClass mappedClass : mappedClasses) {
+                for (MappedTyped mappedTyped : mappedClass.contained) {
+                    if(!(mappedTyped instanceof MappedMethod)) continue;
+                    MappedMethod mappedMethod = (MappedMethod) mappedTyped;
+//                    System.out.printf("exc: %s | mapped: %s\n", excRow.method.toString(), mappedMethod.seargeName);
+                    if(!excRow.method.toString().equals(mappedMethod.getPathlessSeargeName())) continue;
+                    if(!mappedMethod.cmpName.isEmpty()) {
+                        excRow.method = new StringBuilder(mappedMethod.cmpName);
+                    }
+                    System.out.printf(
+                            "%s.%s%s=%s\n",
+                            excRow.clazz.toString(),
+                            excRow.method,
+                            excRow.type.toString(),
+                            excRow.exceptions.toString()
+                    );
+                    break classLoop;
+                }
+            }
+        }
+
         StringBuilder outputBuilder = new StringBuilder("tiny\t2\t0\tofficial\tnamed\n");
 
         for (MappedClass mappedClass : mappedClasses) {
             outputBuilder.append(mappedClass.toTinyMappings());
+            for (MappedTyped mappedTyped : mappedClass.contained) {
+                if(!(mappedTyped instanceof MappedMethod)) continue;
+                MappedMethod method = (MappedMethod) mappedTyped;
+                if(method.exceptions.isEmpty()) continue;
+                System.out.println(
+                        ("".equals(method.cmpName) ? method.seargeName : method.cmpName) +
+                                method.type +
+                                "=" +
+                                method.exceptions
+                );
+            }
         }
 
         if(!Files.exists(output)) Files.createFile(output);
