@@ -55,7 +55,6 @@ public class Main {
                     MappedField mappedField = (MappedField) mappedTyped;
                     if(!mappedField.seargeName.endsWith(parsedField.get(0))) continue;
                     mappedField.cmpName = parsedField.get(1);
-                    break classLoop;
                 }
             }
         }
@@ -67,7 +66,6 @@ public class Main {
                     MappedMethod mappedMethod = (MappedMethod) mappedTyped;
                     if(!mappedMethod.seargeName.endsWith(parsedMethod.get(0))) continue;
                     mappedMethod.cmpName = parsedMethod.get(1);
-                    break classLoop;
                 }
             }
         }
