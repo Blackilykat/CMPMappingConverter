@@ -3,6 +3,7 @@ package dev.blackilykat.structure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MappedClass extends Mapped {
@@ -24,7 +25,8 @@ public class MappedClass extends Mapped {
                     MappedField mappedField = new MappedField();
                     mappedField.notchName = clientRow.get(1);
                     mappedField.seargeName = clientRow.get(2);
-                    String fdNotchClassName = mappedField.notchName.split("/")[0];
+                    String[] fdNotchClassNameParts = mappedField.notchName.split("/");
+                    String fdNotchClassName = String.join("/", Arrays.copyOfRange(fdNotchClassNameParts, 0, fdNotchClassNameParts.length-1));
                     for (MappedClass mappedClass : mappedClasses) {
                         if (mappedClass.notchName.equals(fdNotchClassName)) {
                             mappedClass.contained.add(mappedField);
@@ -37,7 +39,8 @@ public class MappedClass extends Mapped {
                     mappedMethod.notchName = clientRow.get(1);
                     mappedMethod.seargeName = clientRow.get(3);
                     mappedMethod.type = clientRow.get(2); // RetroMCP mappings seem to use notch type declarations
-                    String mdNotchClassName = mappedMethod.notchName.split("/")[0];
+                    String[] mdNotchClassNameParts = mappedMethod.notchName.split("/");
+                    String mdNotchClassName = String.join("/", Arrays.copyOfRange(mdNotchClassNameParts, 0, mdNotchClassNameParts.length-1));
                     for (MappedClass mappedClass : mappedClasses) {
                         if (mappedClass.notchName.equals(mdNotchClassName)) {
                             mappedClass.contained.add(mappedMethod);

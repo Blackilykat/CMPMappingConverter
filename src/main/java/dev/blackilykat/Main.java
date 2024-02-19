@@ -36,6 +36,15 @@ public class Main {
             for (MappedClass mappedClass : mappedClasses) {
                 if(mappedServerClass.seargeName.equals(mappedClass.seargeName)) {
                     alreadyThere = true;
+                    containedLoop:
+                    for (MappedTyped mappedTyped : mappedServerClass.contained) {
+                        for (MappedTyped typed : mappedClass.contained) {
+//                            System.out.printf("a: %s | b: %s\n", typed.notchName, mappedTyped.notchName);
+                            if(typed.notchName.equals(mappedTyped.notchName)) continue containedLoop;
+                        }
+                        System.out.printf("Found server-only: %s", mappedTyped.cmpName);
+                        mappedClass.contained.add(mappedTyped);
+                    }
                     break;
                 }
             }
